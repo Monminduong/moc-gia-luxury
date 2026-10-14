@@ -1,0 +1,1625 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MỘC GIA LUXURY | Nội Thất Gỗ Tự Nhiên & May Đo Đương Đại</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body class="bg-[#faf8f5] text-[#2c2825] antialiased">
+
+  <!-- Admin Sticky Top Status Bar (Visible only when logged in as Admin) -->
+  <div id="admin-top-bar" class="hidden admin-badge-bar text-stone-100 py-2.5 px-4 text-xs sticky top-0 z-50 shadow-md">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
+      <div class="flex items-center space-x-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+        <strong class="text-amber-300 uppercase tracking-wider font-extrabold flex items-center">
+          <i data-lucide="shield-check" class="w-4 h-4 mr-1"></i> Chế Độ Quản Trị Viên (Admin Mode)
+        </strong>
+        <span class="hidden sm:inline text-stone-300">| Bạn có toàn quyền thêm, sửa, xóa hàng mới và hàng cũ thanh lý.</span>
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <button 
+          onclick="openProductModal()"
+          class="px-3 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-stone-950 font-bold text-xs flex items-center space-x-1 shadow-sm transition"
+        >
+          <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+          <span>Thêm Sản Phẩm Mới</span>
+        </button>
+
+        <button 
+          onclick="openAdminDashboard()"
+          class="px-3 py-1.5 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-100 font-semibold text-xs flex items-center space-x-1 border border-stone-600 transition"
+        >
+          <i data-lucide="layout-dashboard" class="w-3.5 h-3.5 text-amber-300"></i>
+          <span>Bảng Quản Trị Kho</span>
+        </button>
+
+        <button 
+          onclick="resetProductsToDefault()"
+          class="px-2.5 py-1.5 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-300 hover:text-white text-xs transition"
+          title="Khôi phục toàn bộ sản phẩm mẫu ban đầu"
+        >
+          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+        </button>
+
+        <button 
+          onclick="logoutAdmin()"
+          class="px-2.5 py-1.5 rounded-lg bg-red-900/60 hover:bg-red-800 text-red-200 text-xs font-semibold flex items-center space-x-1 transition"
+        >
+          <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+          <span>Thoát Admin</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Announcement Bar -->
+  <div class="bg-[#38231a] text-[#e8ded1] text-xs py-2 px-4 border-b border-white/10">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-1 text-center sm:text-left">
+      <div class="flex items-center space-x-2">
+        <span class="inline-block w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+        <span>Ưu đãi tháng: <strong>MIỄN PHÍ VẬN CHUYỂN & LẮP ĐẶT</strong> đơn từ 15 triệu | Nhập mã <strong class="text-amber-300">MOCGIA10</strong> giảm ngay 10%</span>
+      </div>
+      <div class="flex items-center space-x-4 text-[11px] text-stone-300">
+        <span class="flex items-center"><i data-lucide="phone-call" class="w-3 h-3 mr-1 text-amber-400"></i> Hotline: <strong>1900 8899</strong></span>
+        <span class="hidden md:inline">|</span>
+        <button onclick="openAdminLoginModal()" class="hover:text-amber-300 transition flex items-center">
+          <i data-lucide="shield" class="w-3 h-3 mr-1"></i> <span id="admin-nav-btn-text">Đăng Nhập Admin</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Navigation Header -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200/80 shadow-sm transition">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+      
+      <!-- Brand Logo -->
+      <a href="#" class="flex items-center space-x-3 shrink-0">
+        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-[#52362b] to-[#301d16] flex items-center justify-center text-amber-200 shadow-md">
+          <i data-lucide="armchair" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <span class="font-serif font-black text-xl lg:text-2xl tracking-wide text-stone-900 block leading-none">
+            MỘC GIA
+          </span>
+          <span class="text-[10px] uppercase font-bold tracking-[0.2em] text-[#aa843b] block mt-1">
+            Luxury Furniture
+          </span>
+        </div>
+      </a>
+
+      <!-- Search Bar -->
+      <div class="hidden md:flex flex-1 max-w-md mx-4 relative">
+        <div class="w-full relative">
+          <input 
+            id="header-search-input"
+            type="text" 
+            placeholder="Tìm bàn ăn, giường ngủ óc chó, tủ kệ trang trí..." 
+            class="w-full pl-10 pr-4 py-2.5 bg-stone-100 hover:bg-stone-50 focus:bg-white text-xs lg:text-sm rounded-full border border-stone-200 focus:border-[#52362b] focus:outline-none transition"
+          />
+          <i data-lucide="search" class="w-4 h-4 text-stone-400 absolute left-3.5 top-3"></i>
+        </div>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="flex items-center space-x-3 sm:space-x-4">
+        <!-- Nút Dự Toán -->
+        <a 
+          href="#cost-estimator" 
+          class="hidden lg:flex items-center space-x-1.5 px-3.5 py-2 rounded-full border border-amber-600/40 text-[#aa843b] hover:bg-amber-50 text-xs font-semibold transition"
+        >
+          <i data-lucide="calculator" class="w-3.5 h-3.5"></i>
+          <span>Dự Toán Chi Phí</span>
+        </a>
+
+        <!-- Nút Yêu Cầu May Đo -->
+        <button 
+          onclick="openCustomDesignModal()"
+          class="hidden sm:flex items-center space-x-1.5 px-3.5 py-2 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-semibold transition"
+        >
+          <i data-lucide="pen-tool" class="w-3.5 h-3.5 text-stone-600"></i>
+          <span>May Đo 3D</span>
+        </button>
+
+        <!-- Admin Quick Access Button -->
+        <button 
+          onclick="openAdminLoginModal()"
+          class="p-2.5 rounded-full border border-stone-200 hover:border-amber-500 hover:bg-amber-50 text-stone-700 transition"
+          title="Quyền Quản Trị Viên (Thêm/Sửa/Xóa)"
+        >
+          <i data-lucide="user-cog" class="w-5 h-5 text-stone-700"></i>
+        </button>
+
+        <!-- Wishlist -->
+        <button 
+          onclick="showToast('Danh Sách Yêu Thích', `Bạn đang lưu ${state.wishlist.size} sản phẩm yêu thích.`, 'info')"
+          class="relative p-2.5 rounded-full hover:bg-stone-100 text-stone-700 transition"
+          title="Sản phẩm yêu thích"
+        >
+          <i data-lucide="heart" class="w-5 h-5"></i>
+          <span id="wishlist-badge" class="hidden absolute top-1 right-1 w-4 h-4 rounded-full bg-red-600 text-white text-[10px] font-bold flex items-center justify-center">
+            0
+          </span>
+        </button>
+
+        <!-- Shopping Cart -->
+        <button 
+          onclick="openCartDrawer()"
+          class="relative p-2.5 rounded-full bg-[#52362b] text-white hover:bg-[#3d271e] transition shadow-sm flex items-center space-x-2 pl-3 pr-4"
+        >
+          <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+          <span class="text-xs font-bold hidden sm:inline">Giỏ Hàng</span>
+          <span id="cart-badge" class="hidden w-5 h-5 rounded-full bg-amber-400 text-stone-900 text-[11px] font-extrabold flex items-center justify-center">
+            0
+          </span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="relative bg-[#201713] text-white overflow-hidden">
+    <div class="absolute inset-0 z-0">
+      <img 
+        src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1920&q=85" 
+        alt="Nội thất gỗ cao cấp" 
+        class="w-full h-full object-cover opacity-35 filter brightness-75 scale-105 transform duration-1000"
+      />
+      <div class="absolute inset-0 bg-gradient-to-r from-[#1a120e] via-[#1a120e]/80 to-transparent"></div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
+      <div class="max-w-2xl">
+        <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-amber-300 text-xs font-semibold mb-6">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+          <span>Bộ Sưu Tập Gỗ Tự Nhiên & Mid-Century Đương Đại 2026</span>
+        </div>
+
+        <h1 class="text-3xl sm:text-4xl lg:text-6xl font-serif font-extrabold tracking-tight leading-[1.15] mb-6">
+          Nâng Tầm Không Gian Sống Với <span class="text-gold-gradient">Tinh Hoa Gỗ Tự Nhiên</span>
+        </h1>
+
+        <p class="text-stone-300 text-sm sm:text-base lg:text-lg leading-relaxed mb-8 max-w-xl font-light">
+          Tuyển chọn 100% Gỗ Óc Chó Bắc Mỹ, Gỗ Sồi Nga & Gỗ Tần Bì đạt chuẩn FAS. Thiết kế chuẩn tỷ lệ vàng, may đo độc bản theo từng căn hộ. Có đầy đủ <strong>Hàng Mới 100%</strong> và góc <strong>Thanh Lý Showroom (Like New 95%)</strong> giá ưu đãi.
+        </p>
+
+        <div class="flex flex-wrap items-center gap-4">
+          <a 
+            href="#products-section" 
+            class="px-7 py-4 rounded-xl bg-gradient-to-r from-[#c5a059] to-[#aa843b] text-stone-950 font-bold text-sm tracking-wide hover:shadow-lg hover:shadow-amber-500/20 active:scale-95 transition flex items-center space-x-2"
+          >
+            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+            <span>Khám Phá Sản Phẩm</span>
+          </a>
+
+          <a 
+            href="#cost-estimator" 
+            class="px-7 py-4 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-semibold text-sm border border-white/20 transition flex items-center space-x-2"
+          >
+            <i data-lucide="calculator" class="w-4 h-4 text-amber-300"></i>
+            <span>Dự Toán Thi Công Trọn Gói</span>
+          </a>
+        </div>
+
+        <!-- Trust Badges -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-12 pt-8 border-t border-white/15">
+          <div>
+            <div class="text-xl sm:text-2xl font-black text-amber-300">10+ Năm</div>
+            <div class="text-xs text-stone-400 mt-0.5">Kinh nghiệm chế tác gỗ</div>
+          </div>
+          <div>
+            <div class="text-xl sm:text-2xl font-black text-amber-300">5.000+</div>
+            <div class="text-xs text-stone-400 mt-0.5">Căn hộ & biệt thự bàn giao</div>
+          </div>
+          <div>
+            <div class="text-xl sm:text-2xl font-black text-amber-300">100%</div>
+            <div class="text-xs text-stone-400 mt-0.5">Gỗ tự nhiên chuẩn FAS</div>
+          </div>
+          <div>
+            <div class="text-xl sm:text-2xl font-black text-amber-300">5 Năm</div>
+            <div class="text-xs text-stone-400 mt-0.5">Bảo hành chính hãng</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Core Value Propositions -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-20">
+    <div class="bg-white rounded-2xl shadow-xl border border-stone-200/80 p-6 lg:p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      
+      <div class="flex items-start space-x-4">
+        <div class="w-12 h-12 rounded-xl bg-amber-50 text-[#aa843b] flex items-center justify-center shrink-0">
+          <i data-lucide="trees" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h4 class="font-bold text-stone-900 text-sm mb-1">100% Gỗ Chuẩn FAS</h4>
+          <p class="text-xs text-stone-500 leading-relaxed">Gỗ Óc Chó, Sồi, Tần Bì nhập khẩu tẩm sấy công nghệ cao chống cong vênh mối mọt.</p>
+        </div>
+      </div>
+
+      <div class="flex items-start space-x-4">
+        <div class="w-12 h-12 rounded-xl bg-amber-50 text-[#aa843b] flex items-center justify-center shrink-0">
+          <i data-lucide="factory" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h4 class="font-bold text-stone-900 text-sm mb-1">Giá Gốc Từ Xưởng</h4>
+          <p class="text-xs text-stone-500 leading-relaxed">Xưởng sản xuất 5000m2 trực tiếp phân phối, không qua trung gian, tiết kiệm tới 30%.</p>
+        </div>
+      </div>
+
+      <div class="flex items-start space-x-4">
+        <div class="w-12 h-12 rounded-xl bg-amber-50 text-[#aa843b] flex items-center justify-center shrink-0">
+          <i data-lucide="drafting-compass" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h4 class="font-bold text-stone-900 text-sm mb-1">May Đo Theo Bản Vẽ</h4>
+          <p class="text-xs text-stone-500 leading-relaxed">Kiến trúc sư khảo sát tận nơi, thiết kế 3D miễn phí chuẩn chỉnh theo kích thước phòng.</p>
+        </div>
+      </div>
+
+      <div class="flex items-start space-x-4">
+        <div class="w-12 h-12 rounded-xl bg-amber-50 text-[#aa843b] flex items-center justify-center shrink-0">
+          <i data-lucide="truck" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h4 class="font-bold text-stone-900 text-sm mb-1">Giao & Lắp Tận Nhà</h4>
+          <p class="text-xs text-stone-500 leading-relaxed">Đội ngũ thợ mộc lành nghề lắp đặt hoàn thiện, bảo dưỡng và căn chỉnh định kỳ.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Interactive Room Lookbook / Virtual Living Hotspots -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+    <div class="text-center max-w-2xl mx-auto mb-10">
+      <span class="text-xs font-bold uppercase tracking-widest text-[#aa843b] block mb-2">Trải Nghiệm Không Gian Mẫu</span>
+      <h2 class="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-stone-900">
+        Khám Phá Từng Món Đồ Trong Phòng Khách
+      </h2>
+      <p class="text-xs sm:text-sm text-stone-500 mt-2">
+        Nhấp vào các điểm phát sáng trên ảnh để khám phá chi tiết sản phẩm và giá bán thực tế.
+      </p>
+    </div>
+
+    <!-- Hotspot Interactive Container -->
+    <div class="relative rounded-3xl overflow-hidden shadow-2xl border border-stone-200/90 aspect-[16/9] max-h-[560px] bg-stone-900">
+      <img 
+        src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1600&q=85" 
+        alt="Phòng khách mẫu Mộc Gia" 
+        class="w-full h-full object-cover filter brightness-95"
+      />
+
+      <!-- Hotspot 1: Tủ kệ trang trí Walnut -->
+      <div 
+        class="hotspot-dot group" 
+        style="top: 35%; left: 18%;"
+        onclick="openQuickView('prod-walnut-shelf')"
+      >
+        <div class="relative w-7 h-7 flex items-center justify-center">
+          <span class="hotspot-ring"></span>
+          <span class="w-5 h-5 rounded-full bg-[#c5a059] text-stone-950 font-black text-[10px] flex items-center justify-center shadow-lg border border-white">
+            1
+          </span>
+        </div>
+        <div class="absolute left-1/2 -translate-x-1/2 bottom-full mb-3 hidden group-hover:flex flex-col w-56 p-3 bg-white/95 backdrop-blur-md rounded-xl shadow-2xl border border-stone-200 text-left z-30 transition pointer-events-none">
+          <span class="text-[10px] uppercase font-bold text-amber-700">Sản phẩm nổi bật</span>
+          <h5 class="text-xs font-serif font-bold text-stone-900 line-clamp-1">Tủ Kệ Trang Trí Walnut</h5>
+          <span class="text-xs font-extrabold text-[#52362b] mt-0.5">11.850.000 ₫</span>
+          <span class="text-[10px] text-stone-500 mt-1 flex items-center text-amber-600 font-semibold">
+            Bấm để xem chi tiết →
+          </span>
+        </div>
+      </div>
+
+      <!-- Hotspot 2: Bộ Sofa Carina -->
+      <div 
+        class="hotspot-dot group" 
+        style="top: 65%; left: 45%;"
+        onclick="openQuickView('prod-sofa-carina')"
+      >
+        <div class="relative w-7 h-7 flex items-center justify-center">
+          <span class="hotspot-ring"></span>
+          <span class="w-5 h-5 rounded-full bg-[#c5a059] text-stone-950 font-black text-[10px] flex items-center justify-center shadow-lg border border-white">
+            2
+          </span>
+        </div>
+        <div class="absolute left-1/2 -translate-x-1/2 bottom-full mb-3 hidden group-hover:flex flex-col w-56 p-3 bg-white/95 backdrop-blur-md rounded-xl shadow-2xl border border-stone-200 text-left z-30 transition pointer-events-none">
+          <span class="text-[10px] uppercase font-bold text-amber-700">Gỗ Óc Chó & Da Bò Ý</span>
+          <h5 class="text-xs font-serif font-bold text-stone-900 line-clamp-1">Bộ Sofa Văng Óc Chó Carina</h5>
+          <span class="text-xs font-extrabold text-[#52362b] mt-0.5">26.500.000 ₫</span>
+          <span class="text-[10px] text-stone-500 mt-1 flex items-center text-amber-600 font-semibold">
+            Bấm để xem chi tiết →
+          </span>
+        </div>
+      </div>
+
+      <!-- Hotspot 3: Bàn Trà Duet -->
+      <div 
+        class="hotspot-dot group" 
+        style="top: 72%; left: 75%;"
+        onclick="openQuickView('prod-coffee-table-duet')"
+      >
+        <div class="relative w-7 h-7 flex items-center justify-center">
+          <span class="hotspot-ring"></span>
+          <span class="w-5 h-5 rounded-full bg-[#c5a059] text-stone-950 font-black text-[10px] flex items-center justify-center shadow-lg border border-white">
+            3
+          </span>
+        </div>
+        <div class="absolute left-1/2 -translate-x-1/2 bottom-full mb-3 hidden group-hover:flex flex-col w-56 p-3 bg-white/95 backdrop-blur-md rounded-xl shadow-2xl border border-stone-200 text-left z-30 transition pointer-events-none">
+          <span class="text-[10px] uppercase font-bold text-amber-700">Mặt Đá Ceramic Chống Ố</span>
+          <h5 class="text-xs font-serif font-bold text-stone-900 line-clamp-1">Bộ Bàn Trà Đôi Duet</h5>
+          <span class="text-xs font-extrabold text-[#52362b] mt-0.5">4.800.000 ₫</span>
+          <span class="text-[10px] text-stone-500 mt-1 flex items-center text-amber-600 font-semibold">
+            Bấm để xem chi tiết →
+          </span>
+        </div>
+      </div>
+
+      <div class="absolute bottom-4 left-4 glass-dark px-3.5 py-2 rounded-xl text-xs text-white flex items-center space-x-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        <span>Phối cảnh mẫu: Căn Hộ Penthouse The River Thủ Thiêm</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Product Catalog Section -->
+  <section id="products-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    
+    <!-- Header of Catalog -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-6 pb-6 border-b border-stone-200 gap-4">
+      <div>
+        <span class="text-xs font-bold uppercase tracking-widest text-[#aa843b] block mb-1">Danh Mục Sản Phẩm</span>
+        <h2 class="text-2xl sm:text-3xl font-serif font-bold text-stone-900">
+          Bộ Sưu Tập Nội Thất Gỗ Cao Cấp
+        </h2>
+        <p id="products-count" class="text-xs text-stone-500 mt-1">Đang tải sản phẩm...</p>
+      </div>
+
+      <!-- Filters Toolbar -->
+      <div class="flex flex-wrap items-center gap-3">
+        <!-- Wood Type Filter -->
+        <select 
+          id="wood-filter-select"
+          class="bg-white border border-stone-200 rounded-xl px-3 py-2 text-xs font-medium text-stone-700 focus:outline-none focus:border-[#52362b]"
+        >
+          <option value="all">Mọi loại gỗ</option>
+          <option value="Óc Chó">Gỗ Óc Chó Bắc Mỹ</option>
+          <option value="Sồi">Gỗ Sồi Tự Nhiên</option>
+          <option value="Tần Bì">Gỗ Tần Bì (Ash)</option>
+          <option value="Me Tây">Gỗ Me Tây Nguyên Tấm</option>
+          <option value="Gõ Đỏ">Gỗ Gõ Đỏ Quý Hiếm</option>
+        </select>
+
+        <!-- Price Range Filter -->
+        <select 
+          id="price-filter-select"
+          class="bg-white border border-stone-200 rounded-xl px-3 py-2 text-xs font-medium text-stone-700 focus:outline-none focus:border-[#52362b]"
+        >
+          <option value="all">Mọi khoảng giá</option>
+          <option value="under5">Dưới 5 triệu</option>
+          <option value="5to15">Từ 5 – 15 triệu</option>
+          <option value="15to25">Từ 15 – 25 triệu</option>
+          <option value="above25">Trên 25 triệu</option>
+        </select>
+
+        <!-- Sort -->
+        <select 
+          id="sort-select"
+          class="bg-white border border-stone-200 rounded-xl px-3 py-2 text-xs font-medium text-stone-700 focus:outline-none focus:border-[#52362b]"
+        >
+          <option value="featured">Nổi bật nhất</option>
+          <option value="price-asc">Giá: Thấp đến Cao</option>
+          <option value="price-desc">Giá: Cao đến Thấp</option>
+          <option value="rating">Đánh giá tốt nhất</option>
+          <option value="discount">Khuyến mãi nhiều nhất</option>
+        </select>
+
+        <!-- Admin Add Product Button on Toolbar -->
+        <button 
+          onclick="openProductModal()"
+          class="px-3.5 py-2 bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs rounded-xl shadow-sm transition flex items-center space-x-1.5"
+          title="Thêm hàng mới hoặc hàng cũ thanh lý"
+        >
+          <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+          <span>Thêm Hàng</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Tình Trạng Hàng Mới / Hàng Cũ Filter Bar -->
+    <div class="flex flex-wrap items-center gap-2 mb-4 p-2 bg-stone-100/80 rounded-2xl border border-stone-200/80 w-fit">
+      <span class="text-xs font-bold text-stone-600 px-3 flex items-center">
+        <i data-lucide="filter" class="w-3.5 h-3.5 mr-1 text-stone-400"></i> Tình trạng:
+      </span>
+      <button 
+        id="cond-btn-all"
+        onclick="setConditionFilter('all')"
+        class="condition-filter-btn px-4 py-1.5 rounded-xl text-xs font-bold transition bg-[#52362b] text-white"
+      >
+        Tất Cả Hàng
+      </button>
+      <button 
+        id="cond-btn-new"
+        onclick="setConditionFilter('new')"
+        class="condition-filter-btn px-4 py-1.5 rounded-xl text-xs font-medium transition bg-white text-stone-700 hover:text-stone-900 flex items-center space-x-1"
+      >
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span>✨ Hàng Mới 100% Xuất Xưởng</span>
+      </button>
+      <button 
+        id="cond-btn-used"
+        onclick="setConditionFilter('used')"
+        class="condition-filter-btn px-4 py-1.5 rounded-xl text-xs font-medium transition bg-white text-stone-700 hover:text-stone-900 flex items-center space-x-1"
+      >
+        <span class="w-2 h-2 rounded-full bg-orange-500"></span>
+        <span>🏷️ Hàng Cũ / Mẫu Trưng Bày Thanh Lý</span>
+      </button>
+    </div>
+
+    <!-- Category Tabs -->
+    <div id="category-tabs-container" class="flex flex-wrap items-center gap-2 mb-8 overflow-x-auto pb-2">
+      <!-- Injected by app.js -->
+    </div>
+
+    <!-- Products Grid -->
+    <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <!-- Injected by app.js -->
+    </div>
+
+  </section>
+
+  <!-- Interactive Cost Estimator Tool -->
+  <section id="cost-estimator" class="bg-gradient-to-b from-[#2d1f19] to-[#1c130f] text-white py-16 lg:py-24">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <span class="inline-block px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs font-semibold uppercase tracking-wider mb-3">
+          Công Cụ Tính Nhanh
+        </span>
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-white mb-3">
+          Dự Toán Ngân Sách Nội Thất Căn Hộ
+        </h2>
+        <p class="text-stone-300 text-xs sm:text-sm">
+          Nhận ngay khoảng giá dự toán chuẩn xác chỉ sau 3 bước chọn đơn giản, giúp quý khách dễ dàng lên kế hoạch tài chính.
+        </p>
+      </div>
+
+      <div class="bg-stone-900/90 backdrop-blur-md rounded-3xl p-6 sm:p-10 border border-stone-700 shadow-2xl">
+        <form id="estimator-form" class="space-y-8" onsubmit="event.preventDefault()">
+          
+          <!-- Bước 1: Loại Hình Căn Hộ -->
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-amber-300 mb-3 flex items-center">
+              <span class="w-5 h-5 rounded-full bg-amber-500 text-stone-900 font-extrabold flex items-center justify-center mr-2 text-[10px]">1</span>
+              Chọn Loại Hình Bất Động Sản Của Bạn:
+            </label>
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+              <label class="cursor-pointer">
+                <input type="radio" name="est-type" value="apartment1" class="peer sr-only">
+                <div class="p-3.5 rounded-xl border border-stone-700 bg-stone-800/80 peer-checked:border-amber-400 peer-checked:bg-amber-950/40 text-center transition">
+                  <i data-lucide="home" class="w-5 h-5 mx-auto mb-1 text-stone-400 peer-checked:text-amber-400"></i>
+                  <span class="text-xs font-bold block">Chung cư 1PN</span>
+                  <span class="text-[10px] text-stone-400">45 - 55 m²</span>
+                </div>
+              </label>
+
+              <label class="cursor-pointer">
+                <input type="radio" name="est-type" value="apartment2" checked class="peer sr-only">
+                <div class="p-3.5 rounded-xl border border-stone-700 bg-stone-800/80 peer-checked:border-amber-400 peer-checked:bg-amber-950/40 text-center transition">
+                  <i data-lucide="building" class="w-5 h-5 mx-auto mb-1 text-stone-400 peer-checked:text-amber-400"></i>
+                  <span class="text-xs font-bold block">Chung cư 2PN</span>
+                  <span class="text-[10px] text-stone-400">65 - 80 m²</span>
+                </div>
+              </label>
+
+              <label class="cursor-pointer">
+                <input type="radio" name="est-type" value="apartment3" class="peer sr-only">
+                <div class="p-3.5 rounded-xl border border-stone-700 bg-stone-800/80 peer-checked:border-amber-400 peer-checked:bg-amber-950/40 text-center transition">
+                  <i data-lucide="building-2" class="w-5 h-5 mx-auto mb-1 text-stone-400 peer-checked:text-amber-400"></i>
+                  <span class="text-xs font-bold block">Chung cư 3PN</span>
+                  <span class="text-[10px] text-stone-400">90 - 120 m²</span>
+                </div>
+              </label>
+
+              <label class="cursor-pointer">
+                <input type="radio" name="est-type" value="townhouse" class="peer sr-only">
+                <div class="p-3.5 rounded-xl border border-stone-700 bg-stone-800/80 peer-checked:border-amber-400 peer-checked:bg-amber-950/40 text-center transition">
+                  <i data-lucide="warehouse" class="w-5 h-5 mx-auto mb-1 text-stone-400 peer-checked:text-amber-400"></i>
+                  <span class="text-xs font-bold block">Nhà Phố</span>
+                  <span class="text-[10px] text-stone-400">3 - 4 tầng</span>
+                </div>
+              </label>
+
+              <label class="cursor-pointer">
+                <input type="radio" name="est-type" value="villa" class="peer sr-only">
+                <div class="p-3.5 rounded-xl border border-stone-700 bg-stone-800/80 peer-checked:border-amber-400 peer-checked:bg-amber-950/40 text-center transition">
+                  <i data-lucide="castle" class="w-5 h-5 mx-auto mb-1 text-stone-400 peer-checked:text-amber-400"></i>
+                  <span class="text-xs font-bold block">Biệt Thự Villa</span>
+                  <span class="text-[10px] text-stone-400">200m²+</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Bước 2: Chất liệu gỗ -->
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-amber-300 mb-3 flex items-center">
+              <span class="w-5 h-5 rounded-full bg-amber-500 text-stone-900 font-extrabold flex items-center justify-center mr-2 text-[10px]">2</span>
+              Chọn Gói Vật Liệu Gỗ Chủ Đạo:
+            </label>
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+              <label class="cursor-pointer">
+                <input type="radio" name="est-wood" value="mdf" class="peer sr-only">
+                <div class="p-3.5 rounded-xl border border-stone-700 bg-stone-800/80 peer-checked:border-amber-400 peer-checked:bg-amber-950/40 transition">
+                  <span class="text-xs font-bold block text-white">MDF An Cường Chống Ẩm</span>
+                  <span class="text-[11px] text-stone-400 block mt-0.5">Kinh tế, hiện đại, bền 10 năm</span>
+                </div>
+              </label>
+
+              <label class="cursor-pointer">
+                <input type="radio" name="est-wood" value="oak" checked class="peer sr-only">
+                <div class="p-3.5 rounded-xl border border-stone-700 bg-stone-800/80 peer-checked:border-amber-400 peer-checked:bg-amber-950/40 transition">
+                  <span class="text-xs font-bold block text-white">Gỗ Sồi Tự Nhiên (Oak)</span>
+                  <span class="text-[11px] text-stone-400 block mt-0.5">Bắc Âu, sáng ấm, được chuộng nhất</span>
+                </div>
+              </label>
+
+              <label class="cursor-pointer">
+                <input type="radio" name="est-wood" value="ash" class="peer sr-only">
+                <div class="p-3.5 rounded-xl border border-stone-700 bg-stone-800/80 peer-checked:border-amber-400 peer-checked:bg-amber-950/40 transition">
+                  <span class="text-xs font-bold block text-white">Gỗ Tần Bì (Ash)</span>
+                  <span class="text-[11px] text-stone-400 block mt-0.5">Sơn mờ màu Pastel, Tân Cổ Điển</span>
+                </div>
+              </label>
+
+              <label class="cursor-pointer">
+                <input type="radio" name="est-wood" value="walnut" class="peer sr-only">
+                <div class="p-3.5 rounded-xl border border-stone-700 bg-stone-800/80 peer-checked:border-amber-400 peer-checked:bg-amber-950/40 transition">
+                  <span class="text-xs font-bold block text-white">Gỗ Óc Chó Bắc Mỹ (FAS)</span>
+                  <span class="text-[11px] text-stone-400 block mt-0.5">Đẳng cấp thượng lưu, vân xoáy</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Bước 3: Không gian thi công -->
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-amber-300 mb-3 flex items-center">
+              <span class="w-5 h-5 rounded-full bg-amber-500 text-stone-900 font-extrabold flex items-center justify-center mr-2 text-[10px]">3</span>
+              Chọn Các Hạng Mục Không Gian Cần Làm:
+            </label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <label class="flex items-center space-x-2.5 p-3 rounded-xl bg-stone-800/80 border border-stone-700 cursor-pointer">
+                <input type="checkbox" name="est-rooms" data-weight="0.35" checked class="rounded text-amber-500 focus:ring-0">
+                <span class="text-xs font-medium text-stone-200">Phòng Khách (Sofa, Kệ TV, Tủ Decor)</span>
+              </label>
+              <label class="flex items-center space-x-2.5 p-3 rounded-xl bg-stone-800/80 border border-stone-700 cursor-pointer">
+                <input type="checkbox" name="est-rooms" data-weight="0.30" checked class="rounded text-amber-500 focus:ring-0">
+                <span class="text-xs font-medium text-stone-200">Phòng Ăn & Bếp (Bàn Ăn, Tủ Rượu)</span>
+              </label>
+              <label class="flex items-center space-x-2.5 p-3 rounded-xl bg-stone-800/80 border border-stone-700 cursor-pointer">
+                <input type="checkbox" name="est-rooms" data-weight="0.35" checked class="rounded text-amber-500 focus:ring-0">
+                <span class="text-xs font-medium text-stone-200">Phòng Ngủ Master (Giường, Tủ Áo, Bàn Phấn)</span>
+              </label>
+              <label class="flex items-center space-x-2.5 p-3 rounded-xl bg-stone-800/80 border border-stone-700 cursor-pointer">
+                <input type="checkbox" name="est-rooms" data-weight="0.25" class="rounded text-amber-500 focus:ring-0">
+                <span class="text-xs font-medium text-stone-200">Phòng Ngủ Phụ / Phòng Làm Việc</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Kết Quả Dự Toán -->
+          <div class="pt-6 border-t border-stone-700 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div>
+              <span class="text-xs text-stone-400 block">Ước tính ngân sách hoàn thiện:</span>
+              <div id="estimate-result-range" class="text-2xl sm:text-3xl font-extrabold text-amber-300 font-serif mt-1">
+                Đang tính toán...
+              </div>
+              <span class="text-[11px] text-stone-400 block mt-1">
+                *Đã bao gồm chi phí phụ kiện giảm chấn cao cấp và lắp đặt trọn gói.
+              </span>
+            </div>
+
+            <button 
+              type="button"
+              onclick="openCustomDesignModal('Dự Toán Thi Công Trọn Gói')"
+              class="w-full md:w-auto px-7 py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 font-bold rounded-xl text-xs sm:text-sm shadow-xl transition flex items-center justify-center space-x-2"
+            >
+              <i data-lucide="file-text" class="w-4 h-4"></i>
+              <span>Nhận Bảng Báo Giá Chi Tiết & 3D</span>
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Wood Knowledge Guide Section -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+    <div class="text-center max-w-2xl mx-auto mb-12">
+      <span class="text-xs font-bold uppercase tracking-widest text-[#aa843b] block mb-2">Cẩm Nang Kiến Thức</span>
+      <h2 class="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-stone-900">
+        Hiểu Về Các Loại Gỗ Tự Nhiên
+      </h2>
+      <p class="text-xs sm:text-sm text-stone-500 mt-2">
+        Mỗi thớ gỗ đều có câu chuyện và đặc tính riêng. Cùng Mộc Gia chọn chất liệu phù hợp nhất với phong thủy và phong cách của ngôi nhà bạn.
+      </p>
+    </div>
+
+    <div id="wood-guide-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- Injected by app.js -->
+    </div>
+  </section>
+
+  <!-- Customer Reviews / Real Project Handover -->
+  <section class="bg-stone-100/70 border-y border-stone-200/80 py-16 lg:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <span class="text-xs font-bold uppercase tracking-widest text-[#aa843b] block mb-2">Đánh Giá Thực Tế</span>
+        <h2 class="text-2xl sm:text-3xl font-serif font-bold text-stone-900">
+          Khách Hàng Nói Gì Về Mộc Gia Luxury?
+        </h2>
+        <p class="text-xs sm:text-sm text-stone-500 mt-2">
+          Hơn 5.000 gia chủ và kiến trúc sư đã tin tưởng lựa chọn sản phẩm nội thất gỗ của chúng tôi.
+        </p>
+      </div>
+
+      <div id="testimonials-container" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Injected by app.js -->
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Factory & Showroom Commitment -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+    <div class="bg-gradient-to-r from-[#52362b] to-[#37231c] rounded-3xl p-8 lg:p-12 text-white relative overflow-hidden shadow-2xl">
+      <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+        <div>
+          <span class="text-xs font-bold tracking-widest uppercase text-amber-300 block mb-2">Quy Mô Sản Xuất</span>
+          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold mb-4 leading-tight">
+            Xưởng Sản Xuất 5.000m² & Hệ Thống Showroom Trải Dài 3 Miền
+          </h2>
+          <p class="text-stone-300 text-xs sm:text-sm leading-relaxed mb-6">
+            Mộc Gia sở hữu dây chuyền tẩm sấy chân không khép kín và máy cắt phay CNC Homag (Đức), cam kết 100% đúng tiến độ và dung sai dưới 0.5mm. Quý khách có thể trực tiếp đến xưởng xem mộc thô trước khi phun sơn hoàn thiện.
+          </p>
+          <div class="flex flex-wrap gap-4">
+            <button 
+              onclick="showToast('Hệ Thống Showroom', 'Showroom Hà Nội: 88 Nguyễn Cơ Thạch, KĐT Sala, TP.HCM: 12 Mai Chí Thọ. Mở cửa 8:00 - 21:00.', 'info')"
+              class="px-6 py-3 bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold rounded-xl text-xs transition"
+            >
+              Xem Địa Chỉ Showroom
+            </button>
+            <button 
+              onclick="openCustomDesignModal('Đặt Lịch Thăm Quan Xưởng Gỗ')"
+              class="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl text-xs border border-white/20 transition"
+            >
+              Đăng Ký Tham Quan Xưởng
+            </button>
+          </div>
+        </div>
+
+        <div class="relative rounded-2xl overflow-hidden aspect-[4/3] shadow-lg border border-white/15">
+          <img 
+            src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1000&q=80" 
+            alt="Xưởng mộc chế tác gỗ tự nhiên" 
+            class="w-full h-full object-cover"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
+            <div class="text-xs text-white">
+              <span class="font-bold block">Nghệ nhân mộc lành nghề với hơn 20 năm kinh nghiệm</span>
+              <span class="text-stone-300 text-[11px]">Chế tác từng mộng gỗ âm dương chắc chắn trọn đời</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-[#1e1714] text-stone-300 text-xs pt-16 pb-12 border-t border-stone-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+        <!-- Col 1: About -->
+        <div class="lg:col-span-2">
+          <div class="flex items-center space-x-3 mb-4">
+            <div class="w-10 h-10 rounded-xl bg-amber-500 text-stone-950 flex items-center justify-center font-bold">
+              <i data-lucide="armchair" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <span class="font-serif font-black text-xl text-white block leading-none">MỘC GIA LUXURY</span>
+              <span class="text-[9px] uppercase tracking-widest text-[#c5a059]">Nội Thất Gỗ Tự Nhiên & May Đo</span>
+            </div>
+          </div>
+          <p class="text-stone-400 text-xs leading-relaxed max-w-sm mb-4">
+            Thương hiệu tiên phong trong việc kết hợp vẻ đẹp mộc mạc nguyên bản của gỗ tự nhiên Bắc Mỹ với hơi thở kiến trúc đương đại.
+          </p>
+          <div class="flex items-center space-x-3 text-stone-400">
+            <span class="w-8 h-8 rounded-full bg-stone-800 flex items-center justify-center hover:bg-amber-600 hover:text-white cursor-pointer transition">
+              <i data-lucide="facebook" class="w-4 h-4"></i>
+            </span>
+            <span class="w-8 h-8 rounded-full bg-stone-800 flex items-center justify-center hover:bg-amber-600 hover:text-white cursor-pointer transition">
+              <i data-lucide="youtube" class="w-4 h-4"></i>
+            </span>
+            <span class="w-8 h-8 rounded-full bg-stone-800 flex items-center justify-center hover:bg-amber-600 hover:text-white cursor-pointer transition">
+              <i data-lucide="instagram" class="w-4 h-4"></i>
+            </span>
+          </div>
+        </div>
+
+        <!-- Col 2: Hệ Thống Showroom -->
+        <div>
+          <h4 class="font-bold text-white text-xs uppercase tracking-wider mb-4">Hệ Thống Showroom</h4>
+          <ul class="space-y-3 text-stone-400">
+            <li>
+              <strong class="text-stone-200 block">Hà Nội:</strong>
+              <span>Tầng 2, Tòa Nhà Vincom Center, 54A Nguyễn Chí Thanh, Đống Đa</span>
+            </li>
+            <li>
+              <strong class="text-stone-200 block">TP. Hồ Chí Minh:</strong>
+              <span>Khu Đô Thị Sala, 12 Mai Chí Thọ, P. An Lợi Đông, TP. Thủ Đức</span>
+            </li>
+            <li>
+              <strong class="text-stone-200 block">Đà Nẵng:</strong>
+              <span>186 Nguyễn Văn Linh, P. Nam Dương, Q. Hải Châu</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Dịch vụ & Chính sách -->
+        <div>
+          <h4 class="font-bold text-white text-xs uppercase tracking-wider mb-4">Dịch Vụ Khách Hàng</h4>
+          <ul class="space-y-2 text-stone-400">
+            <li><a href="#" class="hover:text-amber-400 transition">Chính sách bảo hành 5 năm</a></li>
+            <li><a href="#" class="hover:text-amber-400 transition">Quy trình thiết kế & may đo</a></li>
+            <li><a href="#" class="hover:text-amber-400 transition">Chính sách đổi trả trong 30 ngày</a></li>
+            <li><a href="#" class="hover:text-amber-400 transition">Vận chuyển & lắp đặt toàn quốc</a></li>
+            <li><button onclick="openAdminLoginModal()" class="text-amber-400 font-semibold hover:underline">Quản Trị Viên (Admin)</button></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Hỗ trợ thanh toán & Hotline -->
+        <div>
+          <h4 class="font-bold text-white text-xs uppercase tracking-wider mb-4">Tổng Đài Hỗ Trợ</h4>
+          <div class="p-3 bg-stone-800/80 rounded-xl border border-stone-700/80 mb-3">
+            <span class="text-[10px] text-stone-400 block">Hotline đặt hàng & tư vấn:</span>
+            <span class="text-base font-extrabold text-amber-400 block mt-0.5">1900 8899</span>
+            <span class="text-[10px] text-stone-400 block mt-0.5">8:00 - 21:30 tất cả các ngày</span>
+          </div>
+          <div class="text-[11px] text-stone-400">
+            <span class="block">Email: cskh@mocgialuxury.vn</span>
+            <span class="block mt-1">Xưởng: KCN Chàng Sơn, Thạch Thất, Hà Nội</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="pt-8 border-t border-stone-800/80 flex flex-col sm:flex-row items-center justify-between text-[11px] text-stone-500 gap-4">
+        <div>
+          © 2026 MỘC GIA LUXURY. Bản quyền thuộc về Công Ty Cổ Phần Nội Thất Mộc Gia Việt Nam.
+        </div>
+        <div class="flex items-center space-x-4">
+          <button onclick="openAdminLoginModal()" class="hover:text-amber-400 transition">
+            Trang Quản Trị Hệ Thống (Admin Panel)
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- Slide-out Cart Drawer -->
+  <div id="cart-backdrop" onclick="closeCartDrawer()" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 transition-opacity"></div>
+  <aside id="cart-drawer" class="fixed top-0 right-0 bottom-0 w-full max-w-md bg-white z-50 shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out">
+    <!-- Header -->
+    <div class="p-4 sm:p-5 border-b border-stone-200 flex items-center justify-between bg-stone-50">
+      <div class="flex items-center space-x-2">
+        <i data-lucide="shopping-bag" class="w-5 h-5 text-[#52362b]"></i>
+        <h3 class="font-serif font-bold text-base text-stone-900">Giỏ Hàng Của Bạn</h3>
+      </div>
+      <button onclick="closeCartDrawer()" class="p-1 rounded-lg text-stone-500 hover:bg-stone-200 transition">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <!-- Free Shipping Progress -->
+    <div class="px-5 py-3 bg-amber-50/70 border-b border-amber-200/50">
+      <div id="cart-freeship-text" class="text-xs text-stone-700 font-medium mb-1.5">
+        Mua thêm để nhận MIỄN PHÍ VẬN CHUYỂN
+      </div>
+      <div class="w-full h-1.5 rounded-full bg-stone-200 overflow-hidden">
+        <div id="cart-freeship-progress" class="h-full bg-[#c5a059] rounded-full transition-all duration-300" style="width: 0%;"></div>
+      </div>
+    </div>
+
+    <!-- Cart Items Scrollable List -->
+    <div id="cart-items-list" class="flex-1 overflow-y-auto p-4 sm:p-5 space-y-3">
+      <!-- Injected by app.js -->
+    </div>
+
+    <!-- Voucher & Total Footer -->
+    <div class="p-4 sm:p-5 border-t border-stone-200 bg-stone-50 space-y-3">
+      <div class="flex gap-2">
+        <input 
+          id="coupon-input" 
+          type="text" 
+          placeholder="Mã giảm giá (VD: MOCGIA10)" 
+          class="flex-1 px-3 py-2 text-xs border border-stone-300 rounded-lg uppercase font-semibold focus:outline-none focus:border-[#52362b]"
+        />
+        <button 
+          onclick="applyCoupon()" 
+          class="px-4 py-2 bg-stone-800 hover:bg-stone-900 text-white text-xs font-semibold rounded-lg transition"
+        >
+          Áp Dụng
+        </button>
+      </div>
+
+      <div class="space-y-1.5 text-xs text-stone-600 pt-2">
+        <div class="flex justify-between">
+          <span>Tạm tính:</span>
+          <strong id="cart-subtotal" class="text-stone-900">0 ₫</strong>
+        </div>
+        <div class="flex justify-between text-emerald-600">
+          <span>Giảm giá khuyến mãi:</span>
+          <strong id="cart-discount">-0 ₫</strong>
+        </div>
+        <div class="flex justify-between">
+          <span>Phí giao hàng & lắp đặt:</span>
+          <strong class="text-stone-900">Tính khi thanh toán</strong>
+        </div>
+        <div class="flex justify-between text-base font-extrabold text-[#52362b] pt-2 border-t border-stone-200">
+          <span>Tổng thanh toán:</span>
+          <span id="cart-final-total">0 ₫</span>
+        </div>
+      </div>
+
+      <button 
+        onclick="openCheckoutModal()" 
+        class="w-full py-3.5 bg-[#52362b] hover:bg-[#3d271e] text-white font-bold rounded-xl text-xs sm:text-sm shadow-md transition flex items-center justify-center space-x-2"
+      >
+        <span>Tiến Hành Đặt Hàng & Thanh Toán</span>
+        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Quick View Modal -->
+  <div id="quickview-modal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" onclick="closeQuickView()"></div>
+    <div class="min-h-screen px-4 flex items-center justify-center py-8">
+      <div class="relative bg-white rounded-3xl max-w-4xl w-full shadow-2xl overflow-hidden z-10 border border-stone-200">
+        <button 
+          onclick="closeQuickView()" 
+          class="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 flex items-center justify-center transition"
+        >
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+
+        <div id="quickview-content">
+          <!-- Injected dynamically by app.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checkout & Payment Modal -->
+  <div id="checkout-modal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" onclick="closeCheckoutModal()"></div>
+    <div class="min-h-screen px-4 flex items-center justify-center py-8">
+      <div class="relative bg-white rounded-3xl max-w-2xl w-full shadow-2xl overflow-hidden z-10 border border-stone-200 p-6 sm:p-8">
+        
+        <div class="flex items-center justify-between pb-4 border-b border-stone-200 mb-6">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-[#aa843b]">Thanh Toán Nhanh</span>
+            <h3 class="font-serif font-bold text-xl text-stone-900">Xác Nhận Đơn Hàng Nội Thất</h3>
+          </div>
+          <button onclick="closeCheckoutModal()" class="p-1 rounded-lg text-stone-400 hover:bg-stone-100">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <form id="checkout-form" onsubmit="submitOrder(event)" class="space-y-5">
+          <div>
+            <h4 class="text-xs font-bold uppercase tracking-wider text-stone-700 mb-3">1. Thông Tin Người Nhận:</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <input 
+                type="text" 
+                name="name" 
+                required 
+                placeholder="Họ và tên quý khách *" 
+                class="px-3.5 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-xs focus:bg-white focus:outline-none focus:border-[#52362b]"
+              />
+              <input 
+                type="tel" 
+                name="phone" 
+                required 
+                placeholder="Số điện thoại nhận hàng *" 
+                class="px-3.5 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-xs focus:bg-white focus:outline-none focus:border-[#52362b]"
+              />
+              <input 
+                type="text" 
+                name="address" 
+                required 
+                placeholder="Địa chỉ giao hàng & lắp đặt (Số nhà, đường, quận/huyện, TP) *" 
+                class="sm:col-span-2 px-3.5 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-xs focus:bg-white focus:outline-none focus:border-[#52362b]"
+              />
+              <textarea 
+                name="notes" 
+                rows="2" 
+                placeholder="Ghi chú thêm về thời gian giao hoặc kích thước thang máy căn hộ..." 
+                class="sm:col-span-2 px-3.5 py-2 bg-stone-50 border border-stone-300 rounded-xl text-xs focus:bg-white focus:outline-none focus:border-[#52362b]"
+              ></textarea>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="text-xs font-bold uppercase tracking-wider text-stone-700 mb-3">2. Phương Thức Thanh Toán:</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              <label class="cursor-pointer">
+                <input type="radio" name="paymentMethod" value="cod" checked onchange="handlePaymentMethodChange('cod')" class="peer sr-only">
+                <div class="p-3 rounded-xl border border-stone-300 bg-stone-50 peer-checked:border-[#52362b] peer-checked:bg-amber-50/40 text-center transition">
+                  <i data-lucide="wallet" class="w-4 h-4 mx-auto mb-1 text-stone-600 peer-checked:text-[#52362b]"></i>
+                  <span class="text-xs font-bold block">COD Khi Nhận Hàng</span>
+                  <span class="text-[10px] text-stone-500">Kiểm tra gỗ mới thanh toán</span>
+                </div>
+              </label>
+
+              <label class="cursor-pointer">
+                <input type="radio" name="paymentMethod" value="bank" onchange="handlePaymentMethodChange('bank')" class="peer sr-only">
+                <div class="p-3 rounded-xl border border-stone-300 bg-stone-50 peer-checked:border-[#52362b] peer-checked:bg-amber-50/40 text-center transition">
+                  <i data-lucide="qr-code" class="w-4 h-4 mx-auto mb-1 text-stone-600 peer-checked:text-[#52362b]"></i>
+                  <span class="text-xs font-bold block">Chuyển Khoản VietQR</span>
+                  <span class="text-[10px] text-stone-500">Quét mã QR tiện lợi</span>
+                </div>
+              </label>
+
+              <label class="cursor-pointer">
+                <input type="radio" name="paymentMethod" value="installment" onchange="handlePaymentMethodChange('installment')" class="peer sr-only">
+                <div class="p-3 rounded-xl border border-stone-300 bg-stone-50 peer-checked:border-[#52362b] peer-checked:bg-amber-50/40 text-center transition">
+                  <i data-lucide="credit-card" class="w-4 h-4 mx-auto mb-1 text-stone-600 peer-checked:text-[#52362b]"></i>
+                  <span class="text-xs font-bold block">Trả Góp 0% Lãi Suất</span>
+                  <span class="text-[10px] text-stone-500">Kỳ hạn 3-12 tháng</span>
+                </div>
+              </label>
+            </div>
+
+            <div id="vietqr-box" class="hidden mt-3 p-4 bg-amber-50/70 border border-amber-200 rounded-2xl flex flex-col sm:flex-row items-center gap-4">
+              <img id="vietqr-image" src="" alt="Mã VietQR" class="w-32 h-32 rounded-lg border border-amber-300 bg-white p-1" />
+              <div class="text-xs text-stone-700 space-y-1">
+                <p class="font-bold text-stone-900">Chuyển Khoản Qua Ngân Hàng Vietcombank:</p>
+                <p>Số tài khoản: <strong class="text-amber-800 font-mono text-sm">9988776655</strong></p>
+                <p>Chủ TK: <strong>CTCP NOI THAT MOC GIA VIET NAM</strong></p>
+                <p class="text-[11px] text-stone-500">Nội dung: <em>[Họ tên] + [Số điện thoại]</em></p>
+              </div>
+            </div>
+
+            <div id="installment-box" class="hidden mt-3 p-3 bg-stone-100 rounded-xl text-xs text-stone-600">
+              Mộc Gia hỗ trợ trả góp lãi suất 0% qua 25 ngân hàng liên kết (Vietcombank, Techcombank, VPBank, TPBank...). Nhân viên CSKH sẽ hỗ trợ quẹt thẻ tận nhà khi bàn giao sản phẩm.
+            </div>
+          </div>
+
+          <div class="bg-stone-50 rounded-2xl p-4 border border-stone-200">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-stone-700 mb-2">3. Tóm Tắt Đơn Hàng:</h4>
+            <div id="checkout-summary-items" class="max-h-36 overflow-y-auto mb-3 pr-1"></div>
+            <div class="flex justify-between items-center pt-2 border-t border-stone-200 font-bold text-sm">
+              <span class="text-stone-700">Tổng Cần Thanh Toán:</span>
+              <span id="checkout-total-amount" class="text-base font-extrabold text-[#52362b]">0 ₫</span>
+            </div>
+          </div>
+
+          <button 
+            type="submit" 
+            class="w-full py-3.5 bg-[#52362b] hover:bg-[#3d271e] text-white font-bold rounded-xl text-sm shadow-md transition flex items-center justify-center space-x-2"
+          >
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span>Hoàn Tất Đặt Hàng</span>
+          </button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Success Modal -->
+  <div id="order-success-modal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" onclick="closeSuccessModal()"></div>
+    <div class="min-h-screen px-4 flex items-center justify-center py-8">
+      <div class="relative bg-white rounded-3xl max-w-md w-full shadow-2xl p-6 sm:p-8 text-center z-10 border border-stone-200">
+        <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center mb-4">
+          <i data-lucide="check-circle" class="w-10 h-10"></i>
+        </div>
+        <h3 class="font-serif font-bold text-2xl text-stone-900 mb-1">Đặt Hàng Thành Công!</h3>
+        <p class="text-xs text-stone-500 mb-4">Cảm ơn quý khách đã tin tưởng và đồng hành cùng Mộc Gia Luxury.</p>
+
+        <div class="bg-stone-50 rounded-2xl p-4 text-xs text-left space-y-2 mb-6 border border-stone-200">
+          <div class="flex justify-between">
+            <span class="text-stone-500">Mã đơn hàng:</span>
+            <strong id="success-order-code" class="text-stone-900 font-mono text-sm">MG-XXXXXX</strong>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-stone-500">Khách hàng:</span>
+            <strong id="success-customer-name" class="text-stone-800">Quý khách</strong>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-stone-500">Số điện thoại:</span>
+            <span id="success-customer-phone" class="text-stone-800">---</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-stone-500">Địa chỉ giao:</span>
+            <span id="success-customer-address" class="text-stone-800 text-right truncate max-w-[200px]">---</span>
+          </div>
+        </div>
+
+        <p class="text-[11px] text-stone-500 mb-6">
+          Chuyên viên tư vấn kỹ thuật của Mộc Gia sẽ gọi điện thoại cho quý khách trong vòng <strong>15 phút</strong> để xác nhận lịch vận chuyển & lắp đặt.
+        </p>
+
+        <button 
+          onclick="closeSuccessModal()" 
+          class="w-full py-3 bg-[#52362b] text-white font-bold rounded-xl text-xs hover:bg-[#3d271e] transition"
+        >
+          Tiếp Tục Xem Sản Phẩm Khác
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Bespoke Woodworking Request Modal -->
+  <div id="custom-design-modal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" onclick="closeCustomDesignModal()"></div>
+    <div class="min-h-screen px-4 flex items-center justify-center py-8">
+      <div class="relative bg-white rounded-3xl max-w-lg w-full shadow-2xl p-6 sm:p-8 z-10 border border-stone-200">
+        
+        <div class="flex items-center justify-between pb-3 border-b border-stone-200 mb-4">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-[#aa843b]">Dịch Vụ May Đo Độc Bản</span>
+            <h3 class="font-serif font-bold text-xl text-stone-900">Đặt Sản Xuất Theo Yêu Cầu</h3>
+          </div>
+          <button onclick="closeCustomDesignModal()" class="p-1 rounded-lg text-stone-400 hover:bg-stone-100">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <p class="text-xs text-stone-600 mb-5 leading-relaxed">
+          Quý khách cần điều chỉnh kích thước vừa vặn với căn phòng hoặc thiết kế theo bản vẽ riêng? Hãy để lại thông tin, kiến trúc sư Mộc Gia sẽ tư vấn và lên bản vẽ 3D miễn phí.
+        </p>
+
+        <form onsubmit="submitCustomDesign(event)" class="space-y-3.5">
+          <div>
+            <label class="block text-xs font-medium text-stone-700 mb-1">Mẫu sản phẩm quan tâm:</label>
+            <input 
+              id="custom-product-name" 
+              type="text" 
+              placeholder="Ví dụ: Tủ kệ trang trí Walnut, Giường ngủ 2m x 2m2..." 
+              class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-xs focus:bg-white focus:outline-none focus:border-[#52362b]"
+            />
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Họ tên của bạn *:</label>
+              <input 
+                type="text" 
+                required 
+                placeholder="Nguyễn Văn A" 
+                class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-xs focus:bg-white focus:outline-none focus:border-[#52362b]"
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Số điện thoại / Zalo *:</label>
+              <input 
+                type="tel" 
+                required 
+                placeholder="0988 xxx xxx" 
+                class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-xs focus:bg-white focus:outline-none focus:border-[#52362b]"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-stone-700 mb-1">Kích thước dự kiến & loại gỗ mong muốn:</label>
+            <textarea 
+              rows="3" 
+              placeholder="VD: Dài 1m6 x Rộng 80cm, làm bằng gỗ Óc Chó, giao tại Vinhomes Ocean Park..." 
+              class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-xs focus:bg-white focus:outline-none focus:border-[#52362b]"
+            ></textarea>
+          </div>
+
+          <button 
+            type="submit" 
+            class="w-full py-3.5 bg-[#52362b] hover:bg-[#3d271e] text-white font-bold rounded-xl text-xs shadow-md transition flex items-center justify-center space-x-2"
+          >
+            <i data-lucide="send" class="w-4 h-4"></i>
+            <span>Gửi Yêu Cầu Tư Vấn & Nhận Phối Cảnh 3D</span>
+          </button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- ADMIN MODALS: LOGIN, DASHBOARD, ADD/EDIT   -->
+  <!-- ========================================== -->
+
+  <!-- Admin Login Modal -->
+  <div id="admin-login-modal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+    <div class="fixed inset-0 bg-black/70 backdrop-blur-sm" onclick="closeAdminLoginModal()"></div>
+    <div class="min-h-screen px-4 flex items-center justify-center py-8">
+      <div class="relative bg-white rounded-3xl max-w-sm w-full shadow-2xl p-6 sm:p-8 z-10 border border-stone-200">
+        <div class="w-12 h-12 rounded-2xl bg-amber-500 text-stone-950 flex items-center justify-center mx-auto mb-4 font-bold shadow-md">
+          <i data-lucide="shield-check" class="w-6 h-6"></i>
+        </div>
+        <h3 class="font-serif font-bold text-xl text-stone-900 text-center mb-1">Đăng Nhập Quản Trị</h3>
+        <p class="text-xs text-stone-500 text-center mb-6">Truy cập quyền quản lý kho, thêm sửa xóa hàng mới & cũ.</p>
+
+        <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-stone-700 mb-1">Tài khoản admin:</label>
+            <input 
+              id="admin-username" 
+              type="text" 
+              value="admin" 
+              required 
+              class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-xs focus:bg-white focus:outline-none focus:border-[#52362b]"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-stone-700 mb-1">Mật khẩu:</label>
+            <input 
+              id="admin-password" 
+              type="password" 
+              value="admin123" 
+              required 
+              class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-xs focus:bg-white focus:outline-none focus:border-[#52362b]"
+            />
+          </div>
+
+          <button 
+            type="submit" 
+            class="w-full py-3 bg-[#52362b] hover:bg-[#3d271e] text-white font-bold rounded-xl text-xs shadow-md transition flex items-center justify-center space-x-2"
+          >
+            <i data-lucide="lock" class="w-4 h-4"></i>
+            <span>Đăng Nhập Quản Trị</span>
+          </button>
+
+          <!-- Quick Login Button for testing -->
+          <button 
+            type="button" 
+            onclick="quickAdminLogin()"
+            class="w-full py-2.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-900 font-bold rounded-xl text-xs transition border border-amber-300 flex items-center justify-center space-x-1"
+          >
+            <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-700"></i>
+            <span>1-Click: Bật Quyền Admin Thử Nghiệm</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Full Dashboard Modal -->
+  <div id="admin-dashboard-modal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+    <div class="fixed inset-0 bg-black/70 backdrop-blur-sm" onclick="closeAdminDashboard()"></div>
+    <div class="min-h-screen px-4 flex items-center justify-center py-6">
+      <div class="relative bg-white rounded-3xl max-w-6xl w-full shadow-2xl overflow-hidden z-10 border border-stone-200 flex flex-col max-h-[90vh]">
+        
+        <!-- Header -->
+        <div class="p-5 sm:p-6 border-b border-stone-200 bg-stone-50 flex flex-wrap items-center justify-between gap-4 shrink-0">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-amber-500 text-stone-950 flex items-center justify-center font-bold">
+              <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h3 class="font-serif font-bold text-lg text-stone-900">Bảng Quản Trị Hệ Thống Mộc Gia</h3>
+              <p class="text-xs text-stone-500">Quản lý kho hàng, phân loại hàng mới / cũ thanh lý, theo dõi đơn hàng</p>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-2">
+            <button 
+              onclick="openProductModal()"
+              class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold rounded-xl text-xs flex items-center space-x-1.5 shadow-sm transition"
+            >
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              <span>+ Thêm Sản Phẩm</span>
+            </button>
+            <button 
+              onclick="closeAdminDashboard()" 
+              class="p-2 rounded-xl text-stone-400 hover:bg-stone-200 hover:text-stone-700 transition"
+            >
+              <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Dashboard Nav Tabs -->
+        <div class="px-6 py-3 border-b border-stone-200 bg-white flex flex-wrap gap-2 shrink-0">
+          <button 
+            id="admin-tab-btn-inventory"
+            onclick="switchAdminTab('inventory')" 
+            class="px-4 py-2 rounded-xl text-xs font-bold bg-[#52362b] text-white transition flex items-center space-x-1.5"
+          >
+            <i data-lucide="box" class="w-3.5 h-3.5"></i>
+            <span>Kho Sản Phẩm (Hàng Mới & Cũ)</span>
+          </button>
+          <button 
+            id="admin-tab-btn-orders"
+            onclick="switchAdminTab('orders')" 
+            class="px-4 py-2 rounded-xl text-xs font-semibold text-stone-600 hover:bg-stone-100 transition flex items-center space-x-1.5"
+          >
+            <i data-lucide="shopping-cart" class="w-3.5 h-3.5"></i>
+            <span>Đơn Hàng Mới</span>
+          </button>
+          <button 
+            id="admin-tab-btn-analytics"
+            onclick="switchAdminTab('analytics')" 
+            class="px-4 py-2 rounded-xl text-xs font-semibold text-stone-600 hover:bg-stone-100 transition flex items-center space-x-1.5"
+          >
+            <i data-lucide="bar-chart-3" class="w-3.5 h-3.5"></i>
+            <span>Thống Kê Doanh Thu & Kho</span>
+          </button>
+        </div>
+
+        <!-- Content Area -->
+        <div class="flex-1 overflow-y-auto p-5 sm:p-6 bg-stone-50/50">
+          
+          <!-- Tab 1: Inventory Table -->
+          <div id="admin-tab-pane-inventory" class="space-y-4">
+            <!-- Table Toolbar -->
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-stone-200">
+              <div class="flex-1 w-full relative">
+                <input 
+                  id="admin-table-search" 
+                  type="text" 
+                  placeholder="Tìm theo tên sản phẩm, SKU hoặc chất liệu..." 
+                  class="w-full pl-9 pr-3 py-2 text-xs border border-stone-200 rounded-xl focus:outline-none focus:border-[#52362b]"
+                />
+                <i data-lucide="search" class="w-4 h-4 text-stone-400 absolute left-3 top-2.5"></i>
+              </div>
+
+              <div class="flex items-center space-x-2 w-full sm:w-auto">
+                <select 
+                  id="admin-table-cond-filter"
+                  class="px-3 py-2 text-xs border border-stone-200 rounded-xl focus:outline-none focus:border-[#52362b] bg-stone-50"
+                >
+                  <option value="all">Tất cả tình trạng</option>
+                  <option value="new">Chỉ Hàng Mới 100%</option>
+                  <option value="used">Chỉ Hàng Cũ / Thanh Lý</option>
+                </select>
+
+                <button 
+                  onclick="resetProductsToDefault()"
+                  class="px-3 py-2 text-xs border border-stone-300 rounded-xl hover:bg-stone-100 text-stone-600 font-semibold whitespace-nowrap transition"
+                >
+                  Nạp Lại Dữ Liệu Gốc
+                </button>
+              </div>
+            </div>
+
+            <!-- Table -->
+            <div class="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                  <thead class="bg-stone-100 text-stone-600 font-bold border-b border-stone-200">
+                    <tr>
+                      <th class="p-3 w-10">#</th>
+                      <th class="p-3">Sản Phẩm & SKU</th>
+                      <th class="p-3">Tình Trạng Hàng</th>
+                      <th class="p-3">Phân Loại & Gỗ</th>
+                      <th class="p-3">Giá Bán</th>
+                      <th class="p-3">Kho Hàng</th>
+                      <th class="p-3 text-right">Thao Tác</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-inventory-tbody" class="divide-y divide-stone-100">
+                    <!-- Injected by app.js -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 2: Orders -->
+          <div id="admin-tab-pane-orders" class="hidden">
+            <div id="admin-orders-container" class="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden p-4">
+              <!-- Injected by app.js -->
+            </div>
+          </div>
+
+          <!-- Tab 3: Analytics -->
+          <div id="admin-tab-pane-analytics" class="hidden">
+            <div id="admin-analytics-container">
+              <!-- Injected by app.js -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Add / Edit Product Modal -->
+  <div id="admin-product-modal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+    <div class="fixed inset-0 bg-black/70 backdrop-blur-sm" onclick="closeProductModal()"></div>
+    <div class="min-h-screen px-4 flex items-center justify-center py-6">
+      <div class="relative bg-white rounded-3xl max-w-2xl w-full shadow-2xl overflow-hidden z-10 border border-stone-200 p-6 sm:p-8">
+        
+        <div class="flex items-center justify-between pb-3 border-b border-stone-200 mb-5">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-amber-600">Quản Lý Sản Phẩm</span>
+            <h3 id="product-modal-title" class="font-serif font-bold text-xl text-stone-900">Thêm Sản Phẩm Mới</h3>
+          </div>
+          <button onclick="closeProductModal()" class="p-1.5 rounded-lg text-stone-400 hover:bg-stone-100">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <form id="admin-product-form" onsubmit="handleSaveProduct(event)" class="space-y-4 max-h-[75vh] overflow-y-auto pr-1">
+          
+          <!-- Tình trạng hàng: Mới vs Cũ (Quan trọng nhất) -->
+          <div class="p-4 bg-amber-50/70 border border-amber-200/80 rounded-2xl">
+            <label class="block text-xs font-bold uppercase tracking-wider text-stone-800 mb-2">
+              Phân Loại Tình Trạng Hàng *:
+            </label>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="flex items-center space-x-2 p-3 bg-white rounded-xl border border-stone-200 cursor-pointer">
+                <input type="radio" name="condition" value="new" checked onchange="toggleConditionInputs(false)" class="text-emerald-600 focus:ring-0">
+                <div>
+                  <span class="text-xs font-bold text-stone-900 block">✨ Hàng Mới 100% Xuất Xưởng</span>
+                  <span class="text-[10px] text-stone-500">Chưa qua sử dụng, bảo hành chuẩn</span>
+                </div>
+              </label>
+
+              <label class="flex items-center space-x-2 p-3 bg-white rounded-xl border border-stone-200 cursor-pointer">
+                <input type="radio" name="condition" value="used" onchange="toggleConditionInputs(true)" class="text-orange-600 focus:ring-0">
+                <div>
+                  <span class="text-xs font-bold text-orange-950 block">🏷️ Hàng Cũ / Trưng Bày Thanh Lý</span>
+                  <span class="text-[10px] text-stone-500">Like new 90-99%, xả kho giá tốt</span>
+                </div>
+              </label>
+            </div>
+
+            <!-- Extra used box -->
+            <div id="used-condition-extra-box" class="hidden mt-3 pt-3 border-t border-amber-200/80 grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-[11px] font-bold text-stone-700 mb-1">Độ mới (%):</label>
+                <input 
+                  type="number" 
+                  name="conditionPercent" 
+                  min="50" 
+                  max="99" 
+                  value="95" 
+                  class="w-full px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs" 
+                />
+              </div>
+              <div class="sm:col-span-2">
+                <label class="block text-[11px] font-bold text-stone-700 mb-1">Ghi chú tình trạng hàng cũ:</label>
+                <input 
+                  type="text" 
+                  name="conditionNote" 
+                  placeholder="VD: Hàng mẫu trưng bày tại showroom Sala 2 tháng, bề mặt còn mới 95%..." 
+                  class="w-full px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs" 
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Tên & SKU -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-medium text-stone-700 mb-1">Tên sản phẩm *:</label>
+              <input 
+                type="text" 
+                name="name" 
+                required 
+                placeholder="VD: Giường Ngủ Gỗ Sồi Bắc Âu, Bàn Trang Điểm..." 
+                class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-xs focus:bg-white focus:outline-none focus:border-[#52362b]"
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Mã SKU:</label>
+              <input 
+                type="text" 
+                name="sku" 
+                placeholder="MG-BED-09" 
+                class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-xs font-mono uppercase focus:bg-white focus:outline-none focus:border-[#52362b]"
+              />
+            </div>
+          </div>
+
+          <!-- Phân loại & Chất liệu gỗ -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Danh mục không gian *:</label>
+              <select 
+                name="category" 
+                class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-xs focus:bg-white focus:outline-none focus:border-[#52362b]"
+              >
+                <option value="livingroom">Phòng Khách</option>
+                <option value="bedroom">Phòng Ngủ</option>
+                <option value="dining">Phòng Ăn & Bếp</option>
+                <option value="office">Phòng Làm Việc</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Chất liệu gỗ *:</label>
+              <input 
+                type="text" 
+                name="woodType" 
+                required 
+                placeholder="VD: Gỗ Óc Chó Bắc Mỹ, Gỗ Sồi Nga..." 
+                class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-xs focus:bg-white focus:outline-none focus:border-[#52362b]"
+              />
+            </div>
+          </div>
+
+          <!-- Giá bán & Giá gốc -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Giá bán hiện tại (VNĐ) *:</label>
+              <input 
+                type="number" 
+                name="price" 
+                required 
+                placeholder="VD: 11850000" 
+                class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-xs font-bold text-[#52362b] focus:bg-white focus:outline-none focus:border-[#52362b]"
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Giá gốc niêm yết (VNĐ):</label>
+              <input 
+                type="number" 
+                name="originalPrice" 
+                placeholder="VD: 14500000 (để hiện giảm giá)" 
+                class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-xs focus:bg-white focus:outline-none focus:border-[#52362b]"
+              />
+            </div>
+          </div>
+
+          <!-- Ảnh sản phẩm -->
+          <div>
+            <label class="block text-xs font-medium text-stone-700 mb-1">Đường dẫn hình ảnh (URL hoặc đường dẫn tệp) *:</label>
+            <input 
+              id="admin-input-image"
+              type="text" 
+              name="image" 
+              required 
+              placeholder="./assets/products/tu-ke-trang-tri-walnut.jpg hoặc URL ảnh mạng" 
+              class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-xs focus:bg-white focus:outline-none focus:border-[#52362b]"
+            />
+            
+            <!-- Quick Pick buttons from User Uploaded Images -->
+            <div class="mt-2 text-[11px] text-stone-500">
+              <span class="font-semibold block mb-1">Chọn nhanh ảnh sản phẩm từ ảnh của bạn:</span>
+              <div class="flex flex-wrap gap-1.5">
+                <button type="button" onclick="selectSampleImage('./assets/products/tu-ke-trang-tri-walnut.jpg')" class="px-2 py-1 bg-stone-100 hover:bg-stone-200 rounded text-[10px]">Tủ kệ Walnut</button>
+                <button type="button" onclick="selectSampleImage('./assets/products/tu-bat-dia-navy-royal.jpg')" class="px-2 py-1 bg-stone-100 hover:bg-stone-200 rounded text-[10px]">Tủ bát đĩa Navy</button>
+                <button type="button" onclick="selectSampleImage('./assets/products/ban-lam-viec-phan-nordic.jpg')" class="px-2 py-1 bg-stone-100 hover:bg-stone-200 rounded text-[10px]">Bàn làm việc Nordic</button>
+                <button type="button" onclick="selectSampleImage('./assets/products/tu-ngan-keo-dresser-zen.jpg')" class="px-2 py-1 bg-stone-100 hover:bg-stone-200 rounded text-[10px]">Tủ ngăn kéo Zen</button>
+                <button type="button" onclick="selectSampleImage('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80')" class="px-2 py-1 bg-stone-100 hover:bg-stone-200 rounded text-[10px]">Giường ngủ mẫu</button>
+                <button type="button" onclick="selectSampleImage('https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&w=900&q=80')" class="px-2 py-1 bg-stone-100 hover:bg-stone-200 rounded text-[10px]">Bàn ăn mẫu</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Kích thước & Bảo hành -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Kích thước (D x R x C):</label>
+              <input 
+                type="text" 
+                name="dimensions" 
+                placeholder="VD: D120 x R40 x C185 cm" 
+                class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-xs focus:bg-white focus:outline-none focus:border-[#52362b]"
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Thời gian bảo hành:</label>
+              <input 
+                type="text" 
+                name="warranty" 
+                placeholder="VD: 5 năm chính hãng" 
+                class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-xs focus:bg-white focus:outline-none focus:border-[#52362b]"
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Huy hiệu tag nổi bật:</label>
+              <input 
+                type="text" 
+                name="tag" 
+                placeholder="VD: Bán chạy, Best Seller..." 
+                class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-xs focus:bg-white focus:outline-none focus:border-[#52362b]"
+              />
+            </div>
+          </div>
+
+          <!-- Mô tả -->
+          <div>
+            <label class="block text-xs font-medium text-stone-700 mb-1">Mô tả sản phẩm:</label>
+            <textarea 
+              name="description" 
+              rows="3" 
+              placeholder="Giới thiệu về đường nét thiết kế, công năng sử dụng, ưu điểm lớp sơn..." 
+              class="w-full px-3.5 py-2 bg-stone-50 border border-stone-300 rounded-xl text-xs focus:bg-white focus:outline-none focus:border-[#52362b]"
+            ></textarea>
+          </div>
+
+          <!-- Tùy chọn kho & nổi bật -->
+          <div class="flex items-center space-x-6 pt-2">
+            <label class="flex items-center space-x-2 text-xs font-medium text-stone-800 cursor-pointer">
+              <input type="checkbox" name="inStock" checked class="rounded text-[#52362b] focus:ring-0">
+              <span>Còn hàng trong kho</span>
+            </label>
+
+            <label class="flex items-center space-x-2 text-xs font-medium text-stone-800 cursor-pointer">
+              <input type="checkbox" name="isFeatured" class="rounded text-[#52362b] focus:ring-0">
+              <span>Đưa lên danh mục nổi bật</span>
+            </label>
+          </div>
+
+          <!-- Submit Buttons -->
+          <div class="pt-4 border-t border-stone-200 flex items-center justify-end space-x-3">
+            <button 
+              type="button" 
+              onclick="closeProductModal()" 
+              class="px-5 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold rounded-xl text-xs transition"
+            >
+              Hủy
+            </button>
+            <button 
+              type="submit" 
+              class="px-6 py-2.5 bg-[#52362b] hover:bg-[#3d271e] text-white font-bold rounded-xl text-xs shadow-md transition flex items-center space-x-1.5"
+            >
+              <i data-lucide="check" class="w-4 h-4"></i>
+              <span>Lưu Sản Phẩm Vào Kho</span>
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col items-end"></div>
+
+  <!-- Floating Quick Actions -->
+  <div class="fixed bottom-6 left-6 z-40 flex flex-col space-y-3">
+    <a 
+      href="tel:19008899" 
+      class="w-12 h-12 rounded-full bg-[#52362b] text-white flex items-center justify-center shadow-2xl hover:scale-110 pulse-call transition"
+      title="Gọi ngay hotline 1900 8899"
+    >
+      <i data-lucide="phone" class="w-5 h-5"></i>
+    </a>
+  </div>
+
+  <!-- Scripts -->
+  <script src="./data.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
